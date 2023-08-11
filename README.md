@@ -1,7 +1,8 @@
 # Secure-bot
 Secure is a powerful protection bot for Discord servers which provides an Anti-Nuke, Anti-Spam, Anti-Raid, Captcha and Nudity-Detector and more.
 
-[!alt text](https://cdn.discordapp.com/attachments/1139562691120353351/1139638715875074111/image.png?raw=True)
+![image](https://github.com/Dreynd-Dev/Secure-bot/assets/130786969/b4931c4f-ee02-4235-9c80-3e7d95d2a17a)
+
 
 # Warning
 This bot is still in developement and may be incomplete and instable.

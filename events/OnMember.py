@@ -25,13 +25,15 @@ class OnMember(commands.Cog):
 
         antiNuke: AntiNuke = self.bot.getInstance(member.guild.id, AntiNuke)
 
-        async for entry in member.guild.audit_logs(limit=1):
+        if antiNuke.enabled:
 
-            if entry.action in [discord.AuditLogAction.kick, discord.AuditLogAction.ban] and entry.user != self.bot.user:
+            async for entry in member.guild.audit_logs(limit=1):
 
-                if isinstance(entry.user, discord.Member):
+                if entry.action in [discord.AuditLogAction.kick, discord.AuditLogAction.ban] and entry.user != self.bot.user:
 
-                    await antiNuke.new_element(entry.user)
+                    if isinstance(entry.user, discord.Member):
+
+                        await antiNuke.new_element(entry.user)
 
     @commands.Cog.listener("on_member_update")
     async def on_member_update(self, before: discord.Member, after: discord.Member):
@@ -43,11 +45,13 @@ class OnMember(commands.Cog):
 
         antiNuke: AntiNuke = self.bot.getInstance(guild.id, AntiNuke)
 
-        async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.unban):
+        if antiNuke.enabled:
 
-            if isinstance(entry.user, discord.Member):
+            async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.unban):
 
-                await antiNuke.new_element(entry.user)
+                if isinstance(entry.user, discord.Member):
+
+                    await antiNuke.new_element(entry.user)
 
 
 def setup(bot: Bot):

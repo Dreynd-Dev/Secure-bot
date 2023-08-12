@@ -19,7 +19,9 @@ class OnMessage(commands.Cog):
 
             antiSpam: AntiSpam = self.bot.getInstance(message.guild.id, AntiSpam)
 
-            await antiSpam.new_element(message.author)
+            if antiSpam.enabled:
+
+                await antiSpam.new_element(message.author)
 
 
 def setup(bot: Bot):

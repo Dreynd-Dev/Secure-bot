@@ -16,33 +16,39 @@ class OnRole(commands.Cog):
 
         antiNuke: AntiNuke = self.bot.getInstance(role.guild.id, AntiNuke)
 
-        async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
+        if antiNuke.enabled:
 
-            if isinstance(entry.user, discord.Member):
+            async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
 
-                await antiNuke.new_element(entry.user)
+                if isinstance(entry.user, discord.Member):
+
+                    await antiNuke.new_element(entry.user)
 
     @commands.Cog.listener("on_guild_role_update")
     async def on_guild_role_update(self, before: discord.Role, after: discord.Role):
 
         antiNuke: AntiNuke = self.bot.getInstance(after.guild.id, AntiNuke)
 
-        async for entry in after.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_update):
+        if antiNuke.enabled:
 
-            if isinstance(entry.user, discord.Member):
+            async for entry in after.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_update):
 
-                await antiNuke.new_element(entry.user)
+                if isinstance(entry.user, discord.Member):
+
+                    await antiNuke.new_element(entry.user)
 
     @commands.Cog.listener("on_guild_role_delete")
     async def on_guild_role_delete(self, role: discord.Role):
 
         antiNuke: AntiNuke = self.bot.getInstance(role.guild.id, AntiNuke)
 
-        async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
+        if antiNuke.enabled:
 
-            if isinstance(entry.user, discord.Member):
+            async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
 
-                await antiNuke.new_element(entry.user)
+                if isinstance(entry.user, discord.Member):
+
+                    await antiNuke.new_element(entry.user)
 
 
 def setup(bot: Bot):

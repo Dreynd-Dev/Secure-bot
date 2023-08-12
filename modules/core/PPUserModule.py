@@ -49,6 +49,8 @@ class PPUserModule(Module, ABC):
 
                 self.data.pop(str(userID))
 
+                self.semaphore.release()
+
                 await self._punishment(member)
 
     @abstractmethod

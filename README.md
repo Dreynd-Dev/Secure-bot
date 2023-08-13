@@ -6,8 +6,6 @@ Secure is a powerful protection bot for Discord servers which provides an Anti-N
 # Warning
 This bot is still in developement and may be incomplete and instable.
 
-**WARNING:** Secure will be soon updated from py-cord to discord.py, requirements may change or evolve
-
 # License
 This code is free to use and is provided with a MIT license, you have the right to copy, modify and use it as you want.
 
@@ -17,3 +15,5 @@ To works, this code requires to download external libraries:
   - Pillow
   - Augmentor
   - aiofile
+
+**WARNING:** Secure will be soon updated from py-cord to discord.py, requirements may change or evolve

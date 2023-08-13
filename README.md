@@ -11,7 +11,7 @@ This code is free to use and is provided with a MIT license, you have the right 
 
 # Requirements
 To works, this code requires to download external libraries:
-  - py-cord<=2.4.1
+  - py-cord>=2.4.1 (soon discord.py>=2.3.2)
   - Pillow
   - Augmentor
   - aiofile

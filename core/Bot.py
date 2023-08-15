@@ -22,16 +22,16 @@ class Bot(commands.AutoShardedBot):
             application_id=1139575728959139880
         )
 
-    def getModuleInstance(self, guildID: int, module: Type[Module]) -> Module:
+    def getModuleInstance(self, guildID: int, module: Type) -> Module:
 
         strGuildId: str = str(guildID)
 
-        moduleInstance: Module = self.__moduleInstances[strGuildId][module.__name__]
+        moduleInstance = self.__moduleInstances[strGuildId][module.__name__]
 
         if moduleInstance is None:
 
-            moduleInstance: Module = module()
-            self.__moduleInstances[strGuildId][module.__name__]: Module = moduleInstance
+            moduleInstance = module()
+            self.__moduleInstances[strGuildId][module.__name__] = moduleInstance
 
         return moduleInstance
 

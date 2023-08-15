@@ -11,9 +11,9 @@ This code is free to use and is provided with a MIT license, you have the right 
 
 # Requirements
 To works, this code requires to download external libraries:
-  - py-cord>=2.4.1 (soon discord.py>=2.3.2)
+  - discord.py>=2.3.2
   - Pillow
   - Augmentor
   - aiofile
 
-**WARNING:** Secure will be soon updated from py-cord to discord.py, requirements may change or evolve
+**WARNING:** Secure is currently being updated from py-cord to discord.py, some functionnality are missing but will be soon back

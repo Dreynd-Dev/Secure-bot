@@ -1,25 +1,23 @@
-import discord
-import datetime
+from discord import Member
+from datetime import timedelta
 
-from core.bot import Bot
 from modules.core.PPUserModule import PPUserModule
 
 
 class AntiSpam(PPUserModule):
 
-    def __init__(self, bot, guildID: int):
-
-        self.bot: Bot = bot
+    def __init__(self):
 
         super().__init__(
-            enabled=bot.file.data[str(guildID)]["AntiSpam"]["enabled"],
-            maxElements=bot.file.data[str(guildID)]["AntiSpam"]["maxElements"],
-            expirationTime=bot.file.data[str(guildID)]["AntiSpam"]["expirationTime"]
+            enabled=True
         )
 
-    async def _punishment(self, member: discord.Member):
+    async def _punishment(self, member: Member) -> None:
 
-        hours = 72
-        until = datetime.datetime.utcnow() + datetime.timedelta(hours=hours)
+        try:
 
-        await member.timeout(until=until)
+            await member.timeout(timedelta(days=3))
+
+        except Exception:
+
+            pass

@@ -1,7 +1,8 @@
-import discord
 import datetime
 
+from discord import Member
 from asyncio import Semaphore
+from collections import defaultdict
 from abc import ABC, abstractmethod
 
 from modules.core.Module import Module
@@ -9,51 +10,40 @@ from modules.core.Module import Module
 
 class PPUserModule(Module, ABC):
 
-    def __init__(self, enabled: bool, maxElements: int, expirationTime: int):
+    def __init__(self, enabled: bool):
+
+        self.__data: defaultdict = defaultdict(lambda: [])
+        self.__semaphore: Semaphore = Semaphore(1)
 
         super().__init__(
             enabled=enabled
         )
 
-        self.maxElements = maxElements
-        self.expirationTime = expirationTime
+    async def new_element(self, member: Member) -> None:
 
-        self.data: dict = {}
-        self.semaphore: Semaphore = Semaphore()
+        strUserId: str = str(member.id)
+        currentDate: datetime.datetime = datetime.datetime.utcnow()
 
-    async def new_element(self, member: discord.Member):
+        async with self.__semaphore:
 
-        userID = member.id
-
-        current_datetime = datetime.datetime.utcnow()
-
-        if str(userID) not in self.data:
-
-            self.data[str(userID)] = []
-
-        async with self.semaphore:
-
-            self.data[str(userID)] = [
-                element for element in self.data[str(userID)]
-                if element["expiration"] >= current_datetime.timestamp()
+            self.__data[strUserId] = [
+                element for element in self.__data[strUserId]
+                if element["expirationDate"] >= currentDate.timestamp()
             ]
 
-            newElement = {
-                "creation": current_datetime.timestamp(),
-                "expiration": (current_datetime + datetime.timedelta(seconds=self.expirationTime)).timestamp()
-            }
+            self.__data[strUserId].append({
+                "expirationDate": (currentDate + datetime.timedelta(seconds=5)).timestamp()
+            })
 
-            self.data[str(userID)].append(newElement)
+            if len(self.__data[strUserId]) > 5:
 
-            if len(self.data[str(userID)]) > self.maxElements:
+                self.__data[strUserId] = []
 
-                self.data.pop(str(userID))
-
-                self.semaphore.release()
+                self.__semaphore.release()
 
                 await self._punishment(member)
 
     @abstractmethod
-    async def _punishment(self, member: discord.Member):
+    async def _punishment(self, member: Member) -> None:
 
         pass

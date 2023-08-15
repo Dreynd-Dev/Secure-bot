@@ -1,39 +1,39 @@
 import discord
+
+from discord import app_commands
 from discord.ext import commands
 
-from core.bot import Bot
+from core.Bot import Bot
 from util.EmbedUtils import EmbedUtils
-from commands.core.Checks import ownerOnly, whitelistOnly
+from commands.core.Checks import isGuildOwner, isWhitelist
 
 
-class WhitelistCommands(commands.Cog):
+class WhitelistCommands(commands.GroupCog, name="whitelist"):
 
     def __init__(self, bot: Bot):
 
         self.bot: Bot = bot
 
-    wl = discord.SlashCommandGroup("whitelist")
+    @app_commands.guild_only()
+    @app_commands.check(isGuildOwner)
+    @app_commands.command(name="add", description="Add a user to the whitelist.")
+    async def _wl_add(self, interaction: discord.Interaction, member: discord.Member):
 
-    @ownerOnly()
-    @discord.guild_only()
-    @wl.command(name="add")
-    async def _wl_add(self, ctx: discord.ApplicationContext, member: discord.Member):
+        await interaction.response.defer(ephemeral=True)
 
-        await ctx.response.defer(ephemeral=True)
+        guildData: dict = self.bot.data.getGuildData(interaction.guild_id)
 
-        guildData: dict = ctx.bot.file.getGuildData(ctx.guild_id)
+        if member.id not in guildData["Whitelist"]:
 
-        if member.id not in guildData["whitelist"]:
-
-            guildData["whitelist"].append(member.id)
-            await ctx.bot.file.updateGuildData(ctx.guild_id, guildData)
+            guildData["Whitelist"].append(member.id)
+            await self.bot.data.updateGuildData(interaction.guild_id, guildData)
 
             em: discord.Embed = EmbedUtils.basicEmbed(
                 title="Success !",
                 description=member.mention + " has been successfully added to the whitelist !"
             )
 
-            await ctx.send_followup(embed=em)
+            await interaction.followup.send(embed=em, ephemeral=True)
 
         else:
 
@@ -42,28 +42,28 @@ class WhitelistCommands(commands.Cog):
                 description=member.mention + " is already in the whitelist !"
             )
 
-            await ctx.send_followup(embed=em)
+            await interaction.followup.send(embed=em)
 
-    @ownerOnly()
-    @discord.guild_only()
-    @wl.command(name="remove")
-    async def _wl_rm(self, ctx: discord.ApplicationContext, member: discord.Member):
+    @app_commands.guild_only()
+    @app_commands.check(isGuildOwner)
+    @app_commands.command(name="remove", description="Remove a user from the whitelist.")
+    async def _wl_rm(self, interaction: discord.Interaction, member: discord.Member):
 
-        await ctx.response.defer(ephemeral=True)
+        await interaction.response.defer(ephemeral=True)
 
-        guildData: dict = ctx.bot.file.getGuildData(ctx.guild_id)
+        guildData: dict = self.bot.data.getGuildData(interaction.guild_id)
 
-        if member.id in guildData["whitelist"]:
+        if member.id in guildData["Whitelist"]:
 
-            guildData["whitelist"].remove(member.id)
-            await ctx.bot.file.updateGuildData(ctx.guild_id, guildData)
+            guildData["Whitelist"].remove(member.id)
+            await self.bot.data.updateGuildData(interaction.guild_id, guildData)
 
             em: discord.Embed = EmbedUtils.basicEmbed(
                 title="Success !",
-                description=member.mention + " has been successfully removed from the whitelist"
+                description=member.mention + " has been successfully removed from the whitelist !"
             )
 
-            await ctx.send_followup(embed=em)
+            await interaction.followup.send(embed=em, ephemeral=True)
 
         else:
 
@@ -72,27 +72,27 @@ class WhitelistCommands(commands.Cog):
                 description=member.mention + " is not in the whitelist !"
             )
 
-            await ctx.send_followup(embed=em)
+            await interaction.followup.send(embed=em)
 
-    @whitelistOnly()
-    @discord.guild_only()
-    @wl.command(name="see")
-    async def _wl_see(self, ctx: discord.ApplicationContext):
+    @app_commands.guild_only()
+    @app_commands.check(isWhitelist)
+    @app_commands.command(name="see", description="Display the current users in the whitelist !")
+    async def _wl_see(self, interaction: discord.Interaction):
 
-        await ctx.response.defer(ephemeral=True)
+        await interaction.response.defer(ephemeral=True)
 
-        guildData = ctx.bot.file.getGuildData(ctx.guild_id)
+        guildData: dict = self.bot.data.getGuildData(interaction.guild_id)
 
-        if guildData["whitelist"]:
+        if guildData["Whitelist"]:
 
-            formatted_ids: list[str] = [f"<@{userID}>" for userID in guildData["whitelist"]]
+            formatted_ids: list[str] = [f"<@{userID}>" for userID in guildData["Whitelist"]]
             wl_members = ", ".join(formatted_ids)
 
         else:
 
-            wl_members = "Actually, no one is in the whitelist !"
+            wl_members = "Actually, nobody is in the whitelist !"
 
-        em: discord.Embed = EmbedUtils.basicEmbed(
+        em = EmbedUtils.basicEmbed(
             title="Whitelist",
             description="> Whitelist is the list of members allowed to perform modifications to the bot parameters."
                         "Members in this list must be confidence member !\n"
@@ -103,9 +103,9 @@ class WhitelistCommands(commands.Cog):
             value=wl_members
         )
 
-        await ctx.send_followup(embed=em)
+        await interaction.followup.send(embed=em)
 
 
-def setup(bot: Bot):
+async def setup(bot: Bot):
 
-    bot.add_cog(WhitelistCommands(bot))
+    await bot.add_cog(WhitelistCommands(bot))

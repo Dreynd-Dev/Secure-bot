@@ -1,19 +1,23 @@
-import discord
-from discord.ext import commands
+from discord import Interaction
 
-from core.bot import Bot
-from commands.core.Context import Context
+from commands.core.Errors import *
 
 
-def isWhitelisted(bot: Bot, member: discord.Member):
+async def isGuildOwner(interaction: Interaction) -> bool:
 
-    return member == member.guild.owner or member.id in bot.file.data.get(str(member.guild.id), {}).get("whitelist", [])
+    if interaction.user == interaction.guild.owner:
+
+        return True
+
+    raise NotOwner
 
 
-def whitelistOnly():
+async def isWhitelist(interaction: Interaction) -> bool:
 
-    async def predicate(ctx: Context) -> bool:
+    guildData: dict = interaction.client.data.getGuildData(interaction.guild_id)
 
-        return isWhitelisted(ctx.bot, ctx.user)
+    if await isGuildOwner(interaction) or interaction.user.id in guildData["Whitelist"]:
 
-    return commands.check(predicate)
+        return True
+
+    raise NotWhitelist

@@ -1,17 +1,16 @@
-import datetime
-
-import discord
+from discord import Embed, Color
+from datetime import datetime
 
 
 class EmbedUtils:
 
     @staticmethod
-    def basicEmbed(title: str = None, description: str = None):
+    def basicEmbed(title: str = None, description: str = None) -> Embed:
 
-        embed = discord.Embed(
+        em = Embed(
             title=title, description=description,
-            color=discord.Color.from_rgb(47, 49, 54),
-            timestamp=datetime.datetime.utcnow()
+            color=Color.from_rgb(47, 49, 54),
+            timestamp=datetime.utcnow()
         )
 
-        return embed
+        return em

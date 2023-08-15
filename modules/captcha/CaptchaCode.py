@@ -13,7 +13,7 @@ from util.EmbedUtils import EmbedUtils
 from util.FileUtils import FileUtils
 
 W, H = 350, 100
-color: tuple[int, int, int] = (90, 90, 90)
+color = (90, 90, 90)
 
 font: ImageFont = ImageFont.truetype("C:/Users/Enzo/PycharmProjects/Secure dpy/assets/fonts/quicksand.otf", size=60)
 

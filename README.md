@@ -10,10 +10,8 @@ This bot is still in developement and may be incomplete and instable.
 This code is free to use and is provided with a MIT license, you have the right to copy, modify and use it as you want.
 
 # Requirements
-To works, this code requires to download external libraries:
+To works, this code requires to be used with external libraries:
   - discord.py>=2.3.2
   - Pillow
   - Augmentor
   - aiofile
-
-**WARNING:** Secure is currently being updated from py-cord to discord.py, some functionnality are missing but will be soon back

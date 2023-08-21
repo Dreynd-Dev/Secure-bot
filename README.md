@@ -13,5 +13,8 @@ This code is free to use and is provided with a MIT license, you have the right 
 To works, this code requires to be used with external libraries:
   - discord.py>=2.3.2
   - Pillow
-  - Augmentor
-  - aiofile
+  - asyncpg (needed soon)
+  - Augmentor (removed soon)
+  - aiofile (removed soon)
+
+**Data storing system will be soon replaced from JSON files to PostgreSQL databases**

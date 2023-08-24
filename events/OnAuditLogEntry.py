@@ -37,7 +37,7 @@ class OnAuditLogEntry(commands.Cog):
 
                 member: Member = entry.guild.get_member(entry.user.id)
 
-                if member is not None:
+                if member is not None and member != self.bot.user:
 
                     await antiNuke.new_element(member)
 
